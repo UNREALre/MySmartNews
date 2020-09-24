@@ -1,0 +1,18 @@
+appName: my_smart_news
+
+app:
+  secret: some
+  email: some@gmail.com
+
+db:
+  name: some
+  user: some
+  pass: some
+  host: some
+  port: 1234
+
+mail:
+  host: 'smtp.googlemail.com'
+  port: '587'
+  user: 'some@gmail.com'
+  pass: 'some'
