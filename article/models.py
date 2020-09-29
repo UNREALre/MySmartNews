@@ -36,7 +36,16 @@ class Source(models.Model):
     categories = models.ManyToManyField(Category, related_name='sources')
 
     def __str__(self):
-        return '#{} - {}'.format(self.id, self.name)
+        return '#{}. {}'.format(self.id, self.name)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['name', ]),
+            models.Index(fields=['url', ]),
+        ]
+        constraints = [
+            models.UniqueConstraint(fields=['url', ], name='unique source url')
+        ]
 
 
 class Article(models.Model):
@@ -75,4 +84,7 @@ class Article(models.Model):
         indexes = [
             models.Index(fields=['url', ]),
             models.Index(fields=['header', ]),
+        ]
+        constraints = [
+            models.UniqueConstraint(fields=['url', ], name='unique article url')
         ]
