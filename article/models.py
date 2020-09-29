@@ -3,7 +3,9 @@
 Article models: Sources, Categories, Articles, etc.
 """
 
+import re
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Category(models.Model):
@@ -23,9 +25,9 @@ class Source(models.Model):
     """
     Source Model.
 
-    Name - user friendly source name.
-    Label - short name for system usage.
-    URL - exact url of the source that will be parsed
+    name - user friendly source name.
+    label - short name for system usage.
+    url - exact url of the source that will be parsed
     """
 
     name = models.CharField(max_length=255)
@@ -35,3 +37,42 @@ class Source(models.Model):
 
     def __str__(self):
         return '#{} - {}'.format(self.id, self.name)
+
+
+class Article(models.Model):
+    """
+    Article Model.
+
+    header - parsed name of the article
+    text - parsed full text of the article
+    date - parsed date of the article
+    date_added - when the article was added to DB
+    url - url of the article
+    source_id - id of the source
+    """
+
+    header = models.CharField(max_length=255)
+    text = models.TextField()
+    url = models.URLField()
+    date = models.DateTimeField()
+    date_added = models.DateTimeField(auto_now_add=True)
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+    users = models.ManyToManyField(User, related_name='articles')
+
+    @property
+    def short_text(self):
+        """Returns short version of full-text"""
+
+        clean_text = re.sub('[^A-Za-zа-яА-Я0-9 ]+', '', self.text)
+        return clean_text[:500]
+
+    def __str__(self):
+        return '#{}. {}'.format(self.id, self.header)
+
+    class Meta:
+        """URL and header fields has to be indexed, because of many searches using them during parser process"""
+
+        indexes = [
+            models.Index(fields=['url', ]),
+            models.Index(fields=['header', ]),
+        ]
