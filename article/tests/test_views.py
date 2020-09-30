@@ -83,3 +83,21 @@ class SourceAPITest(TestCase):
             content_type='application/json'
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_source(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(self.admin_token.key))
+        response = self.client.put(
+            reverse('article:source-detail', args=[self.my_source.pk]),
+            data=json.dumps(self.valid_source),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_invalid_source(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(self.admin_token.key))
+        response = self.client.put(
+            reverse('article:source-detail', args=[self.my_source.pk]),
+            data=json.dumps(self.invalid_source),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
