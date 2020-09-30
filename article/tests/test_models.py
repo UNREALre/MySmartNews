@@ -12,6 +12,7 @@ from ..models import Source, Article, Category
 
 
 def create_demo_data():
+    User.objects.create_superuser('admin', 'admin@admin.com', 'admin123')
     user_1 = User.objects.create_user(username='test1', password='test123321')
     user_2 = User.objects.create_user(username='test2', password='test123321')
     user_3 = User.objects.create_user(username='test3', password='test123321')
