@@ -24,7 +24,7 @@ class NewVisitorTest(unittest.TestCase):
         self.browser.get(project_url)
 
         # Page Title check
-        self.assertIn('Page not found at /', self.browser.title)
+        self.assertIn('My Smart News - новости, которые выбираете Вы!', self.browser.title)
 
         # Visitor passing the test for our system to find out his interests
         # ...
