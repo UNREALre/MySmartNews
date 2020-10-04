@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     # Local Apps
     'user',
     'article',
+    'public_site',
 ]
 
 REST_FRAMEWORK = {

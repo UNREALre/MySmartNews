@@ -1,3 +1,3 @@
 """
-Tests for article module.
+Tests for article app.
 """
