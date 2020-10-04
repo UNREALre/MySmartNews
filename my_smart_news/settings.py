@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'user',
     'article',
     'public_site',
+    'smart_parser',
 ]
 
 REST_FRAMEWORK = {
