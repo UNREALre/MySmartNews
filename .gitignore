@@ -1,5 +1,10 @@
 config.yaml
 
+# exclude everything
+logs/*
+# exception to the rule
+!logs/.keep
+
 # Editors
 .vscode/
 .idea/

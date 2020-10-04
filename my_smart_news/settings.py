@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 import os
 import confuse
+from loguru import logger
 
 from pathlib import Path
 
@@ -147,3 +148,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+loguru_config = {
+    'rotation': '00:00',
+    'compression': 'zip'
+}
+logger.add('logs/log.log', **loguru_config)
