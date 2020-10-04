@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-Base top-level functional testing goes here.
+Base top-level functional testing goes here, from the user point of view.
 """
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
-import unittest
-
-project_url = 'http://localhost:8000/'
+from django.test import LiveServerTestCase
 
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -21,14 +19,10 @@ class NewVisitorTest(unittest.TestCase):
 
     def test_can_load_homepage(self):
         # Visitor goes to the homepage of the web site
-        self.browser.get(project_url)
+        self.browser.get(self.live_server_url)
 
         # Page Title check
         self.assertIn('My Smart News - новости, которые выбираете Вы!', self.browser.title)
 
         # Visitor passing the test for our system to find out his interests
         # ...
-
-
-if __name__ == '__main__':
-    unittest.main()
