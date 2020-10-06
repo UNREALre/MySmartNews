@@ -20,7 +20,7 @@ from article.models import Article
 from smart_parser.helpers import clean_page
 
 
-class Dtf:
+class Rbc:
     def __init__(self, driver):
         self.driver = driver
         self.height = self.driver.execute_script("return document.body.scrollHeight")
@@ -28,7 +28,7 @@ class Dtf:
     def test_connection(self):
         """Test if Selenium successfully connected to feed."""
 
-        nav_logo = self.driver.find_element_by_class_name('site-header__item--logo')
+        nav_logo = self.driver.find_element_by_class_name('topline__logo-block')
         auth_flag = True if nav_logo else False
 
         return auth_flag
@@ -60,15 +60,15 @@ class Dtf:
                 break
 
             try:
-                t_links = self.driver.find_elements_by_class_name('t-link')
-                for link in t_links:
-                    if 'вчера' in link.text:
+                article_times = self.driver.find_elements_by_class_name('item__category')
+                for times in article_times:
+                    if len(times.text) > 5:  # actual is like "12:25"
                         found_not_actual = True
                         break
             except StaleElementReferenceException:
                 logger.error('Time tag not found in articles feed from DTF source.')
 
-        html_articles = self.driver.find_elements_by_class_name('feed__item')
+        html_articles = self.driver.find_elements_by_class_name('js-category-item')
         articles = list()
         if html_articles:
             with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
@@ -82,9 +82,11 @@ class Dtf:
         parsed_article = dict()
 
         try:
-            article_stamp = int(article.find_element_by_tag_name('time').get_attribute('data-date'))
-            article_time = datetime.fromtimestamp(article_stamp, pytz.timezone('Europe/Moscow'))
-            is_actual_article = True if article_time.date() == datetime.today().date() else False
+            article_stamp = article.find_element_by_class_name('item__category').text
+            is_actual_article = True if len(article_stamp) == 5 else False
+            if is_actual_article:
+                article_time = datetime.now(pytz.timezone('Europe/Moscow'))
+                article_time.replace(minute=int(article_stamp[3:]), hour=int(article_stamp[:2]))
         except NoSuchElementException:
             article_time = ''
             is_actual_article = False
@@ -92,13 +94,13 @@ class Dtf:
 
         if is_actual_article:
             try:
-                h2 = article.find_element_by_tag_name('h2').text
+                h2 = article.find_element_by_class_name('item__title').text
             except NoSuchElementException:
                 h2 = ''
                 logger.error('Can\'t find h2 for article with text: {}'.format(article.text))
 
             try:
-                a_tag = article.find_element_by_class_name('t-link')
+                a_tag = article.find_element_by_class_name('item__link')
                 href = a_tag.get_attribute('href')
             except NoSuchElementException:
                 href = ''
@@ -114,19 +116,25 @@ class Dtf:
                     try:
                         sleep(0.5)  # simulation user behavior
                         detail = BeautifulSoup(requests.get(href).content, 'lxml')
-                        body_post = detail.find('div', {'class': 'content--full'})
+                        body_post = detail.find('div', {'class': 'l-col-main'})
                         if body_post:
                             # remove some web page stuff
                             try:
                                 body_post = clean_page(body_post, {
                                     'div': [
-                                        'content-counters',
-                                        'authorCard',
+                                        'article__header',
+                                        'article__inline-video',
+                                        'article__inline-item__link',
+                                        'article__inline - item__category',
+                                        'article__inline-item',
+                                        'pro-anons',
+                                        'article__authors',
+                                        'article__tags',
+                                        'banner',
+                                        'banner__median_mobile',
+                                        'article__main-image',
                                     ]
                                 })
-
-                                if body_post.find('figure'):
-                                    body_post.find('figure').decompose()
                             except Exception as ex:
                                 logger.error(
                                     'Error "{}" while trying to remove unused elements from page: {}'.format(ex, href))
@@ -151,13 +159,13 @@ class Dtf:
         return parsed_article
 
 
-class DtfBuilder:
+class RbcBuilder:
     def __init__(self):
         self._instance = None
 
     def __call__(self, **kwargs):
         driver = self.create_driver()
-        return Dtf(driver)
+        return Rbc(driver)
 
     def create_driver(self):
         useragent = UserAgent()
@@ -166,7 +174,7 @@ class DtfBuilder:
 
         driver = webdriver.Firefox(profile)
 
-        url = "https://dtf.ru/"
+        url = "https://www.rbc.ru/"
         driver.get(url)
 
         return driver

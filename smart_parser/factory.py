@@ -5,6 +5,7 @@ Implementation of Object Factory for Parsers and so on.
 
 from smart_parser.parsers.Shazoo import ShazooBuilder
 from smart_parser.parsers.Dtf import DtfBuilder
+from smart_parser.parsers.Rbc import RbcBuilder
 
 
 class ObjectFactory:
@@ -24,3 +25,4 @@ class ObjectFactory:
 factory = ObjectFactory()
 factory.register_builder('SHAZ', ShazooBuilder())
 factory.register_builder('DTF', DtfBuilder())
+factory.register_builder('RBC_POL', RbcBuilder())
