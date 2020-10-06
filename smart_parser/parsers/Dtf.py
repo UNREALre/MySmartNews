@@ -85,7 +85,7 @@ class Dtf:
 
         try:
             article_stamp = int(article.find_element_by_tag_name('time').get_attribute('data-date'))
-            article_time = datetime.fromtimestamp(article_stamp, tz=pytz.timezone('Europe/Moscow'))
+            article_time = datetime.fromtimestamp(article_stamp, pytz.timezone('Europe/Moscow'))
             is_actual_article = True if article_time.date() == datetime.today().date() else False
         except NoSuchElementException:
             article_time = ''
@@ -118,6 +118,15 @@ class Dtf:
                         detail = BeautifulSoup(requests.get(href).content, 'lxml')
                         body_post = detail.find('div', {'class': 'content--full'})
                         if body_post:
+                            # remove some web page stuff
+                            try:
+                                body_post.find('div', {'class': 'content-counters'}).decompose()
+                                body_post.find('figure').decompose()
+                                body_post.find('div', {'class': 'authorCard'}).decompose()
+                            except Exception as ex:
+                                logger.error(
+                                    'Error "{}" while trying to remove unused elements from page: {}'.format(ex, href))
+
                             full_text = body_post.get_text().strip()
                             parsed_article = {
                                 'url': href,
