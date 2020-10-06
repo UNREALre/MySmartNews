@@ -66,7 +66,6 @@ class Article(models.Model):
     date = models.DateTimeField()
     date_added = models.DateTimeField(auto_now_add=True)
     source = models.ForeignKey(Source, on_delete=models.CASCADE)
-    users = models.ManyToManyField(User, related_name='articles')
 
     @property
     def short_text(self):

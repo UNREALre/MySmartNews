@@ -7,3 +7,7 @@ psycopg2==2.8.6
 djangorestframework==3.12.1
 selenium==3.141.0
 loguru==0.5.3
+fake_useragent
+bs4==0.0.1
+requests==2.24.0
+lxml==4.5.2

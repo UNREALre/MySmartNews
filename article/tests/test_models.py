@@ -43,7 +43,6 @@ def create_demo_data():
         date=datetime.fromisoformat('2020-09-28 12:17:00'),
         source=source_1
     )
-    article_1.users.add(user_1)
 
     article_2 = Article.objects.create(
         header='Статья №2',
@@ -52,7 +51,6 @@ def create_demo_data():
         date=datetime.fromisoformat('2020-09-25 10:15:00'),
         source=source_2
     )
-    article_2.users.add(user_2)
 
 
 class SourceTest(TestCase):
