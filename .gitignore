@@ -1,6 +1,8 @@
+# current project
 config.yaml
 *.sqlite3
 *.rdb
+/my_smart_news/staticfiles/
 
 # exclude everything
 logs/*

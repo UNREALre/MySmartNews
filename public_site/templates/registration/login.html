@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block body %}
+
+    {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            {% translate 'Неверный логин или пароль!' %}
+        </div>
+    {% endif %}
+
+    {% if next %}
+        {% if user.is_authenticated %}
+            <div class="alert alert-danger" role="alert">
+                {% translate 'У Вас нет прав для доступа к этому функционалу!' %}
+            </div>
+        {% else %}
+            <div class="alert alert-primary" role="alert">
+                {% translate 'Пожалуйста, авторизуйтесь, чтобы получить доступ к странице.' %}
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <form method="post" action="{% url 'user:login' %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+
+        <div class="form-group">
+            {{ form.username.label_tag }}
+            {{ form.username | add_class:'form-control' }}
+        </div>
+        <div class="form-group">
+            {{ form.password.label_tag }}
+            {{ form.password | add_class:'form-control' }}
+        </div>
+        <div class="form-check">
+            {{ form.remember_me | add_class:'form-check-input' }}
+            {{ form.remember_me.label_tag }}
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">{% translate 'Войти' %}</button>
+        </div>
+
+    </form>
+
+    <p>
+        <a href="{% url 'user:signup' %}">{% translate 'Зарегистрироваться' %}</a> /
+        <a href="{% url 'user:password_reset' %}">{% translate 'Забыли пароль?' %}</a>
+    </p>
+
+{% endblock %}

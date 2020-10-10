@@ -1,0 +1,28 @@
+input[type='text'],
+input[type='password'],
+input[type='email'],
+input[type='phone'] {
+    width: 100%;
+}
+
+.auth-wrapper {
+    width: 400px;
+    margin: 0 auto;
+}
+
+.main-content-wrapper {
+    margin-top: 40px;
+}
+
+.actions-wrapper {
+    margin-bottom: 40px;
+}
+
+.data-cell {
+    max-width: 500px;
+    overflow: hidden;
+}
+
+.req {
+    color: red;
+}
