@@ -5,6 +5,10 @@
 
 {% block body %}
 
+    <div class="alert alert-success" role="alert">
+        <p>{% translate 'Сервис My Smart News предлагает вам читать только те новости, которые интересны иммено Вам!<br>Пожалуйста, пройдите процедуру авторизации / регистрации, чтобы использоваться сервис.' %}</p>
+    </div>
+
     {% if form.errors %}
         <div class="alert alert-danger" role="alert">
             {% translate 'Неверный логин или пароль!' %}
@@ -17,9 +21,11 @@
                 {% translate 'У Вас нет прав для доступа к этому функционалу!' %}
             </div>
         {% else %}
+            {% comment %}
             <div class="alert alert-primary" role="alert">
                 {% translate 'Пожалуйста, авторизуйтесь, чтобы получить доступ к странице.' %}
             </div>
+            {% endcomment %}
         {% endif %}
     {% endif %}
 
