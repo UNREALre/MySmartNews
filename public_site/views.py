@@ -9,6 +9,7 @@ from django.core.paginator import Paginator
 
 from my_smart_news.settings import logger
 from article.models import Source, Article
+from user.models import UserSources
 
 
 @logger.catch
@@ -17,8 +18,8 @@ from article.models import Source, Article
 def home_page(request):
 
     user_sources = request.user.sources.all()
-    articles = Article.objects.filter(source__in=user_sources).order_by('-date')
-    paginator = Paginator(articles, 25)
+    articles = Article.objects.filter(source__usersources__in=user_sources).order_by('source__usersources__source_order')
+    paginator = Paginator(articles, 50)
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -36,6 +37,7 @@ def manage_resources(request):
     if request.POST:
         source_id = int(request.POST['source'])
         status = request.POST['status']
+        source_order = request.POST['source_order']
         try:
             source = Source.objects.get(pk=source_id)
             ok = True
@@ -43,14 +45,24 @@ def manage_resources(request):
             ok = False
         else:
             if status == 'enable':
-                request.user.sources.add(source)
+                try:
+                    user_source = UserSources.objects.get(user=request.user, source=source)
+                    user_source.source_order = source_order
+                except UserSources.DoesNotExist:
+                    user_source = UserSources(user=request.user, source=source, source_order=source_order)
+                finally:
+                    user_source.save()
             else:
-                request.user.sources.remove(source)
+                try:
+                    UserSources.objects.get(user=request.user, source=source).delete()
+                except UserSources.DoesNotExist:
+                    logger.error('Trying to disable user ({}) source ({}) that is not in DB'.format(
+                        request.user.username, source.name))
 
         return JsonResponse({'ok': ok})
     else:
-        user_sources = request.user.sources.order_by('name')
-        all_sources = Source.objects.order_by('name')  # example of sorting, excessively ATM, cause of the Meta settings
+        user_sources = request.user.sources.all()
+        all_sources = Source.objects.order_by('usersources__source_order')
 
         context = {
             'user_sources': user_sources,

@@ -18,10 +18,12 @@
 
             <div class="card-deck mt-5" id="sortable">
                 {% for source in all_sources %}
-                    <div class="card text-white mb-3 source-card {% if source.id in user.sources.all|get_value_in_qs:'id' %}bg-success{% else %}bg-info{% endif %}"
+                    <div class="card text-white mb-3 source-card {% if source.id in user.sources.all|get_value_in_qs:'source__id' %}bg-success{% else %}bg-info{% endif %}"
                          style="max-width: 18rem;"
                          data-id="{{ source.id }}"
-                         data-status_action="{% if source.id in user.sources.all|get_value_in_qs:'id' %}disable{% else %}enable{% endif %}">
+                         data-status_action="{% if source.id in user.sources.all|get_value_in_qs:'source__id' %}disable{% else %}enable{% endif %}"
+                         data-sort="{% for user_source in user_sources %}{% if user_source.source.id == source.id %}{{ user_source.source_order }}{% endif %}{% endfor %}"
+                    >
                       <div class="card-header">
                           {% for category in source.categories.all %}
                               {{ category.name }}{% if not forloop.last %}, {% endif %}
@@ -42,7 +44,32 @@
     <script>
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         $("document").ready(function(e){
-            $("#sortable").sortable();
+            $("#sortable").sortable({
+                update: function( event, ui ) {
+                    var source_order = 10;
+                    $(this).find(".source-card").each(function(i){
+                        var card = $(this);
+                        if (card.data("status_action") === "disable") {// the source is enabled
+                            card.data("sort", source_order);
+                            $.ajax({
+                                url: window.manageSourceURL,
+                                data: "source="+card.data("id")+"&status=enable&source_order="+source_order,
+                                type: 'POST',
+                                beforeSend: function(xhr){
+                                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                                },
+                                success: function(data) {
+                                    //
+                                },
+                                failure: function(data) {
+                                    alert('Что-то пошло не так! Повторите попытку.');
+                                }
+                            });
+                            source_order += 10;
+                        }
+                    });
+                },
+            });
             $("#sortable").disableSelection();
 
             $(".source-card").on("dblclick", function(e){
