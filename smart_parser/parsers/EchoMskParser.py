@@ -3,6 +3,7 @@
 https://echo.msk.ru/ parser.
 """
 
+import copy
 import concurrent.futures
 import requests
 from bs4 import BeautifulSoup
@@ -84,18 +85,15 @@ class EchoMsk:
                     sleep(0.5)  # simulation user behavior
                     detail = BeautifulSoup(requests.get(href).content, 'lxml')
                     body_post = detail.find('div', {'class': 'typical'})
+                    picture = None
                     if body_post:
-                        # remove some web page stuff
-                        try:
-                            if body_post.find('figure'):
-                                body_post.find('figure').decompose()
-                        except Exception as ex:
-                            logger.error(
-                                'Error "{}" while trying to remove unused elements from page: {}'.format(ex, href))
+                        if body_post.find('img'):
+                            picture = body_post.find('img').attrs['src']
 
                         full_text = body_post.get_text().strip()
                         parsed_article = {
                             'url': href,
+                            'picture': picture,
                             'header': h2,
                             'text': full_text,
                             'date': article_time,

@@ -39,6 +39,7 @@ def save_to_db(articles, source):
                 source=source,
                 url=article.get('url'),
                 header=article.get('header'),
+                picture=article.get('picture'),
                 text=article.get('text'),
                 date=article.get('date'),
             )
