@@ -13,7 +13,17 @@
                   </div>
                   <div class="card-body">
                     <h5 class="card-title">{{ article.header }}</h5>
-                    <div class="card-text">{{ article.text }}</div>
+                    <div class="card-text">
+                        {% if article.picture %}
+                            <div class="row">
+                                <div class="col-sm-6"><img src="{{ article.picture }}" alt="" class="article-img"></div>
+                                <div class="col-sm-6">{{ article.text }}</div>
+                            </div>
+                        {% else %}
+                            {{ article.text }}
+                        {% endif %}
+
+                    </div>
                   </div>
                 </div>
             {% endfor %}
