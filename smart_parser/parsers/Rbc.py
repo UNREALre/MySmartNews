@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-https://dtf.ru/ parser.
+https://rbc.ru/ parser.
 """
 
 import concurrent.futures
