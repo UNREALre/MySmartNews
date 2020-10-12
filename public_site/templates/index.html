@@ -15,14 +15,11 @@
                     <h5 class="card-title">{{ article.header }}</h5>
                     <div class="card-text">
                         {% if article.picture %}
-                            <div class="row">
-                                <div class="col-sm-6"><img src="{{ article.picture }}" alt="" class="article-img"></div>
-                                <div class="col-sm-6">{{ article.text }}</div>
+                            <div class="float-right pl-3 pb-3">
+                                <img src="{{ article.picture }}" alt="" class="article-img shadow img-fluid">
                             </div>
-                        {% else %}
-                            {{ article.text }}
                         {% endif %}
-
+                        {{ article.text }}
                     </div>
                   </div>
                 </div>

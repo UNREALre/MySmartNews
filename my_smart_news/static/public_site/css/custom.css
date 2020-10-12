@@ -45,4 +45,5 @@ input[type='phone'] {
 
 .article-img {
     display: block;
+    max-width: 100%;
 }
