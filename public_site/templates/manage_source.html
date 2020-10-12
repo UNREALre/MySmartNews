@@ -12,10 +12,11 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="alert alert-warning">
-                {% translate 'Голубым отображаются не выбранные источники, зелёным - те, что уже включены в Ваш новостной фид. Просто кликните мышкой по интересующему Вас ресурсу для добавления в фид или удаления из него.' %}
+                <p>{% translate 'Голубым отображаются не выбранные источники, зелёным - те, что уже включены в Ваш новостной фид. Просто дважды кликните мышкой по интересующему Вас ресурсу для добавления в фид или удаления из него.' %}</p>
+                <p>{% translate 'Вы можете задать приоритет вывода новостей в ленте. Приоритет ресурса увеличивается слева-направо сверху-вниз. Чтобы изменить приоритет источника, просто перетащите его в нужное место списка.' %}</p>
             </div>
 
-            <div class="card-deck mt-5">
+            <div class="card-deck mt-5" id="sortable">
                 {% for source in all_sources %}
                     <div class="card text-white mb-3 source-card {% if source.id in user.sources.all|get_value_in_qs:'id' %}bg-success{% else %}bg-info{% endif %}"
                          style="max-width: 18rem;"
@@ -41,7 +42,10 @@
     <script>
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         $("document").ready(function(e){
-            $(".source-card").on("click", function(e){
+            $("#sortable").sortable();
+            $("#sortable").disableSelection();
+
+            $(".source-card").on("dblclick", function(e){
                 var card = $(this);
                 $.ajax({
                     url: window.manageSourceURL,
