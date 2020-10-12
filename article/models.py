@@ -35,7 +35,7 @@ class Source(models.Model):
     url = models.URLField()
     description = models.TextField(null=True, blank=True)
     categories = models.ManyToManyField(Category, related_name='sources')
-    subscribers = models.ManyToManyField(User, related_name='sources', null=True, blank=True)
+    subscribers = models.ManyToManyField(User, related_name='sources', blank=True)
 
     def __str__(self):
         return '#{}. {}'.format(self.id, self.name)
