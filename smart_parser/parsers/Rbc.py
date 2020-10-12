@@ -118,6 +118,9 @@ class Rbc:
                         detail = BeautifulSoup(requests.get(href).content, 'lxml')
                         body_post = detail.find('div', {'class': 'l-col-main'})
                         if body_post:
+                            img = detail.find('img', {'class': 'article__main-image__image'})
+                            picture = img.attrs['src'] if img else None
+
                             # remove some web page stuff
                             try:
                                 body_post = clean_page(body_post, {
@@ -143,6 +146,7 @@ class Rbc:
                             parsed_article = {
                                 'url': href,
                                 'header': h2,
+                                'picture': picture,
                                 'text': full_text,
                                 'date': article_time,
                             }
