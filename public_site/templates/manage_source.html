@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% load i18n %}
+{% load extra_tags %}
+
+{% block title %}
+    <title>{% translate 'Управление новостными ресурсами' %}</title>
+{% endblock %}
+
+{% block body %}
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="alert alert-warning">
+                {% translate 'Голубым отображаются не выбранные источники, зелёным - те, что уже включены в Ваш новостной фид. Просто кликните мышкой по интересующему Вас ресурсу для добавления в фид или удаления из него.' %}
+            </div>
+
+            <div class="card-deck mt-5">
+                {% for source in all_sources %}
+                    <div class="card text-white mb-3 source-card {% if source.id in user.sources.all|get_value_in_qs:'id' %}bg-success{% else %}bg-info{% endif %}"
+                         style="max-width: 18rem;"
+                         data-id="{{ source.id }}"
+                         data-status_action="{% if source.id in user.sources.all|get_value_in_qs:'id' %}disable{% else %}enable{% endif %}">
+                      <div class="card-header">
+                          {% for category in source.categories.all %}
+                              {{ category.name }}{% if not forloop.last %}, {% endif %}
+                          {% endfor %}
+                      </div>
+                      <div class="card-body">
+                        <h5 class="card-title">{{ source.name }}</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                      </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        $("document").ready(function(e){
+            $(".source-card").on("click", function(e){
+                var card = $(this);
+                $.ajax({
+                    url: window.manageSourceURL,
+                    data: "source="+card.data("id")+"&status="+card.data("status_action"),
+                    type: 'POST',
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                    },
+                    success: function(data) {
+                        if (data.ok) {
+                            if (card.data("status_action") === "enable") {
+                                // Successfully add sourced to user news feed
+                                card.data("status_action", "disable");
+                                card.removeClass("bg-info").addClass("bg-success");
+                            } else {
+                                card.data("status_action", "enable");
+                                card.removeClass("bg-success").addClass("bg-info");
+                            }
+                        }
+                    },
+                    failure: function(data) {
+                        alert('Что-то пошло не так! Повторите попытку.');
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

@@ -26,3 +26,19 @@ input[type='phone'] {
 .req {
     color: red;
 }
+
+.nav-action a {
+    color: #FFF;
+}
+
+.card-deck{
+    margin-top: 10px;
+    margin-left: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-gap: .5rem;
+}
+
+.source-card {
+    cursor: pointer;
+} 

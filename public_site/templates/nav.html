@@ -1,0 +1,20 @@
+{% load i18n %}
+
+<nav class="navbar navbar-expand navbar-dark bg-dark">
+  <a class="navbar-brand" href="{% url 'home' %}">MySmartNews</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      {% url 'manage-resources' as manage_resources_url %}
+      <li class="nav-item {% if request.get_full_path == manage_resources_url %}active{% endif %}">
+        <a class="nav-link" href="{{ manage_resources_url }}">{% translate 'Ресурсы' %}</a>
+      </li>
+    </ul>
+    <div class="nav-action">
+        <a href="{% url 'user:logout' %}">{% translate 'Выход' %}</a>
+    </div>
+  </div>
+</nav>

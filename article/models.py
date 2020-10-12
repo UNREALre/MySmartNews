@@ -34,6 +34,7 @@ class Source(models.Model):
     label = models.CharField(max_length=100)
     url = models.URLField()
     categories = models.ManyToManyField(Category, related_name='sources')
+    subscribers = models.ManyToManyField(User, related_name='sources', null=True)
 
     def __str__(self):
         return '#{}. {}'.format(self.id, self.name)
@@ -45,6 +46,9 @@ class Source(models.Model):
         ]
         constraints = [
             models.UniqueConstraint(fields=['url', ], name='unique source url')
+        ]
+        ordering = [
+            'name',
         ]
 
 

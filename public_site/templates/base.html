@@ -8,13 +8,19 @@
         <meta name="keywords" content="My Smart News - новости, которые выбираете Вы!" />
         <meta name="description" content="My Smart News - новости, которые выбираете Вы!">
 
-        <title>My Smart News - новости, которые выбираете Вы!</title>
+        {% block title %}
+            <title>My Smart News - новости, которые выбираете Вы!</title>
+        {% endblock %}
 
         <link rel="stylesheet" href="{% static 'public_site/css/bootstrap.min.css' %}">
         <link rel="stylesheet" href="{% static 'public_site/css/custom.css' %}">
     </head>
 <body>
     <div class="container">
+        {% if user.is_authenticated %}
+            {% include 'nav.html' %}
+        {% endif %}
+
         {% comment %}
             {% set flash_messages = get_flashed_messages() %}
             {% if flash_messages %}
@@ -31,6 +37,9 @@
         </div>
     </div>
 
+    <script type="text/javascript">
+        window.manageSourceURL = '{% url 'manage-resources' %}';
+    </script>
     <script src="{% static 'public_site/js/jq.js' %}"></script>
     <script src="{% static 'public_site/js/bootstrap.min.js' %}"></script>
 
