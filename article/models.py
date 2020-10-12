@@ -33,6 +33,7 @@ class Source(models.Model):
     name = models.CharField(max_length=255)
     label = models.CharField(max_length=100)
     url = models.URLField()
+    description = models.TextField(null=True)
     categories = models.ManyToManyField(Category, related_name='sources')
     subscribers = models.ManyToManyField(User, related_name='sources', null=True)
 
