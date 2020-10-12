@@ -18,7 +18,7 @@ def home_page(request):
 
     user_sources = request.user.sources.all()
     articles = Article.objects.filter(source__in=user_sources).order_by('-date')
-    paginator = Paginator(articles, 10)
+    paginator = Paginator(articles, 25)
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
