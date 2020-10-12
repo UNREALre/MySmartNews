@@ -33,9 +33,9 @@ class Source(models.Model):
     name = models.CharField(max_length=255)
     label = models.CharField(max_length=100)
     url = models.URLField()
-    description = models.TextField(null=True)
+    description = models.TextField(null=True, blank=True)
     categories = models.ManyToManyField(Category, related_name='sources')
-    subscribers = models.ManyToManyField(User, related_name='sources', null=True)
+    subscribers = models.ManyToManyField(User, related_name='sources', null=True, blank=True)
 
     def __str__(self):
         return '#{}. {}'.format(self.id, self.name)
