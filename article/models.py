@@ -66,6 +66,7 @@ class Article(models.Model):
     """
 
     header = models.CharField(max_length=255)
+    picture = models.CharField(max_length=255, null=True, blank=True)
     text = models.TextField()
     url = models.URLField()
     date = models.DateTimeField()
