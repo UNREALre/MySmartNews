@@ -86,7 +86,7 @@ class Rbc:
             is_actual_article = True if len(article_stamp) == 5 else False
             if is_actual_article:
                 article_time = datetime.now(pytz.timezone('Europe/Moscow'))
-                article_time.replace(minute=int(article_stamp[3:]), hour=int(article_stamp[:2]))
+                article_time = article_time.replace(minute=int(article_stamp[3:]), hour=int(article_stamp[:2]))
         except NoSuchElementException:
             article_time = ''
             is_actual_article = False
