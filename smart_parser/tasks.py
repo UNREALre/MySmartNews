@@ -18,8 +18,8 @@ from smart_parser.parser import start_parsing
 @app.task(name='old_cleaner_task')
 def old_cleaner_task():
     logger.info('Cleaning process started ... ')
-    yesterday = datetime.today() - timedelta(1)
-    result = Article.objects.filter(date__lt=yesterday).delete()
+    last_date = datetime.today() - timedelta(2)
+    result = Article.objects.filter(date__lt=last_date).delete()
     logger.info('Cleaning completed. Deleted info: {}'.format(result))
 
     return True
