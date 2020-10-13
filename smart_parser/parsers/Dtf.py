@@ -116,6 +116,9 @@ class Dtf:
                         detail = BeautifulSoup(requests.get(href).content, 'lxml')
                         body_post = detail.find('div', {'class': 'content--full'})
                         if body_post:
+                            img_wrapper = detail.find('div', {'class': 'andropov_image'})
+                            picture = img_wrapper.attrs['data-image-src'] if img_wrapper else None
+
                             # remove some web page stuff
                             try:
                                 body_post = clean_page(body_post, {
@@ -135,6 +138,7 @@ class Dtf:
                             parsed_article = {
                                 'url': href,
                                 'header': h2,
+                                'picture': picture,
                                 'text': full_text,
                                 'date': article_time,
                             }
