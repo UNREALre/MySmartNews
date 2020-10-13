@@ -44,11 +44,14 @@ class Lenta:
         art_wrapper = self.driver.find_element_by_class_name('b-layout_archive')
         html_articles = art_wrapper.find_elements_by_class_name('b-tabloid__topic_news')
         articles = list()
-        if html_articles:
-            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-                articles = executor.map(self.parse_article, html_articles)
-
-        self.driver.close()
+        try:
+            if html_articles:
+                with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+                    articles = executor.map(self.parse_article, html_articles)
+        except Exception as ex:
+            logger.error('Error during parsing process of feed: {}. Error: {}'.format(feed_url, ex))
+        finally:
+            self.driver.close()
 
         return articles
 

@@ -41,14 +41,17 @@ class Shazoo:
         """Start parsing process. Get pages to parse. Return generator with parsed articles"""
 
         articles = list()
-        articles_added = extend_articles(articles, self.parse_page(feed_url))
-        page = 1
-        while articles_added:
-            sleep(0.5)  # simulation user behavior
-            page += 1
-            articles_added = extend_articles(articles, self.parse_page('{}?page={}'.format(feed_url, page)))
-
-        self.driver.close()
+        try:
+            articles_added = extend_articles(articles, self.parse_page(feed_url))
+            page = 1
+            while articles_added:
+                sleep(0.5)  # simulation user behavior
+                page += 1
+                articles_added = extend_articles(articles, self.parse_page('{}?page={}'.format(feed_url, page)))
+        except Exception as ex:
+            logger.error('Error during parsing process of feed: {}. Error: {}'.format(feed_url, ex))
+        finally:
+            self.driver.close()
 
         return articles
 

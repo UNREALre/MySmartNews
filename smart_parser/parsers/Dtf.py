@@ -70,11 +70,15 @@ class Dtf:
 
         html_articles = self.driver.find_elements_by_class_name('feed__item')
         articles = list()
-        if html_articles:
-            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-                articles = executor.map(self.parse_article, html_articles)
 
-        self.driver.close()
+        try:
+            if html_articles:
+                with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+                    articles = executor.map(self.parse_article, html_articles)
+        except Exception as ex:
+            logger.error('Error during parsing process of feed: {}. Error: {}'.format(feed_url, ex))
+        finally:
+            self.driver.close()
 
         return articles
 
