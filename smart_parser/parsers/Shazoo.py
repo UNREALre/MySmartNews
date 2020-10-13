@@ -99,10 +99,16 @@ class Shazoo:
                         detail = BeautifulSoup(requests.get(href).content, 'lxml')
                         body_post = detail.find('section', {'class': 'body'})
                         if body_post:
+                            picture = None
+                            img_wrapper = detail.find('div', {'class': 'entryImageContainer'})
+                            if img_wrapper:
+                                picture = img_wrapper.find('img').attrs['src'] if img_wrapper.find('img') else None
+
                             full_text = body_post.get_text().strip()
                             parsed_article = {
                                 'url': href,
                                 'header': h2,
+                                'picture': picture,
                                 'text': full_text,
                                 'date': article_time,
                             }
