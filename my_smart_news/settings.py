@@ -151,7 +151,7 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 30  # One month
 
 LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
