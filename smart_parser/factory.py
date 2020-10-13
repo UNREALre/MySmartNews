@@ -8,6 +8,7 @@ from smart_parser.parsers.Dtf import DtfBuilder
 from smart_parser.parsers.Rbc import RbcBuilder
 from smart_parser.parsers.EchoMskParser import EchoMskBuilder
 from smart_parser.parsers.Lenta import LentaBuilder
+from smart_parser.parsers.Sports import SportsBuilder
 
 
 class ObjectFactory:
@@ -34,3 +35,4 @@ factory.register_builder('ECHO_MSK', EchoMskBuilder())
 factory.register_builder('LENTA_WORLD', LentaBuilder())
 factory.register_builder('LENTA_RUS', LentaBuilder())
 factory.register_builder('LENTA_SPORT', LentaBuilder())
+factory.register_builder('SPORTS_FTB', SportsBuilder())
