@@ -12,7 +12,7 @@ from article.models import Source
 class UserSources(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sources')
     source = models.ForeignKey(Source, on_delete=models.CASCADE)
-    source_order = models.IntegerField()
+    source_order = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return '#{}. {} - {}'.format(self.id, self.user.username, self.source.name)

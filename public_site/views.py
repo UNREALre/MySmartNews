@@ -37,7 +37,7 @@ def manage_resources(request):
     if request.POST:
         source_id = int(request.POST['source'])
         status = request.POST['status']
-        source_order = request.POST['source_order']
+        source_order = request.POST.get('source_order', None)
         try:
             source = Source.objects.get(pk=source_id)
             ok = True

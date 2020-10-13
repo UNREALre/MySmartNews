@@ -42,61 +42,67 @@
 
 {% block scripts %}
     <script>
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        $("document").ready(function(e){
-            $("#sortable").sortable({
-                update: function( event, ui ) {
-                    var source_order = 10;
-                    $(this).find(".source-card").each(function(i){
-                        var card = $(this);
-                        if (card.data("status_action") === "disable") {// the source is enabled
-                            card.data("sort", source_order);
-                            $.ajax({
-                                url: window.manageSourceURL,
-                                data: "source="+card.data("id")+"&status=enable&source_order="+source_order,
-                                type: 'POST',
-                                beforeSend: function(xhr){
-                                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
-                                },
-                                success: function(data) {
-                                    //
-                                },
-                                failure: function(data) {
-                                    alert('Что-то пошло не так! Повторите попытку.');
-                                }
-                            });
-                            source_order += 10;
+        function updateUserSources() {
+            var source_order = 10, card_container = $("#sortable");
+            card_container.find(".source-card").each(function(i){
+                var card = $(this);
+                if (card.data("status_action") === "disable") {// the source is enabled
+                    card.data("sort", source_order);
+                    $.ajax({
+                        url: window.manageSourceURL,
+                        data: "source="+card.data("id")+"&status=enable&source_order="+source_order,
+                        type: 'POST',
+                        beforeSend: function(xhr){
+                            xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                        },
+                        success: function(data) {
+                            //
+                        },
+                        failure: function(data) {
+                            alert('Что-то пошло не так! Повторите попытку.');
                         }
                     });
+                    source_order += 10;
+                }
+            });
+        }
+
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        $("document").ready(function(e){
+            $("#sortable").sortable({ // User change it's source position (order)
+                update: function( event, ui ) {
+                    updateUserSources();
                 },
             });
             $("#sortable").disableSelection();
 
-            $(".source-card").on("dblclick", function(e){
+            $(".source-card").on("dblclick", function(e){ // user enable/disable the source
                 var card = $(this);
-                $.ajax({
-                    url: window.manageSourceURL,
-                    data: "source="+card.data("id")+"&status="+card.data("status_action"),
-                    type: 'POST',
-                    beforeSend: function(xhr){
-                        xhr.setRequestHeader('X-CSRFToken', csrftoken);
-                    },
-                    success: function(data) {
-                        if (data.ok) {
-                            if (card.data("status_action") === "enable") {
-                                // Successfully add sourced to user news feed
-                                card.data("status_action", "disable");
-                                card.removeClass("bg-info").addClass("bg-success");
-                            } else {
-                                card.data("status_action", "enable");
-                                card.removeClass("bg-success").addClass("bg-info");
-                            }
+                if (card.data("status_action") === "enable") {
+                    // Successfully add sourced to user news feed
+                    card.data("status_action", "disable");
+                    card.removeClass("bg-info").addClass("bg-success");
+                    updateUserSources();
+                } else {
+                    card.data("status_action", "enable");
+                    card.removeClass("bg-success").addClass("bg-info");
+
+                    $.ajax({
+                        url: window.manageSourceURL,
+                        data: "source="+card.data("id")+"&status=disable",
+                        type: 'POST',
+                        beforeSend: function(xhr){
+                            xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                        },
+                        success: function(data) {
+                            //
+                        },
+                        failure: function(data) {
+                            alert('Что-то пошло не так! Повторите попытку.');
                         }
-                    },
-                    failure: function(data) {
-                        alert('Что-то пошло не так! Повторите попытку.');
-                    }
-                });
+                    });
+                }
+
             });
         });
     </script>
