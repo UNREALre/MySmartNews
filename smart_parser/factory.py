@@ -7,6 +7,7 @@ from smart_parser.parsers.Shazoo import ShazooBuilder
 from smart_parser.parsers.Dtf import DtfBuilder
 from smart_parser.parsers.Rbc import RbcBuilder
 from smart_parser.parsers.EchoMskParser import EchoMskBuilder
+from smart_parser.parsers.Lenta import LentaBuilder
 
 
 class ObjectFactory:
@@ -30,3 +31,4 @@ factory.register_builder('RBC_POL', RbcBuilder())
 factory.register_builder('RBC_ECO', RbcBuilder())
 factory.register_builder('RBC_SOC', RbcBuilder())
 factory.register_builder('ECHO_MSK', EchoMskBuilder())
+factory.register_builder('LENTA_WORLD', LentaBuilder())
