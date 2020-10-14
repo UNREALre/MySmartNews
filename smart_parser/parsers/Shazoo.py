@@ -10,7 +10,8 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from django.conf import settings
 from fake_useragent import UserAgent
 from time import sleep
 from datetime import datetime
@@ -144,12 +145,11 @@ class ShazooBuilder:
         profile.set_preference('general.useragent.override', useragent.random)
 
         options = Options()
-        options.headless = True
+        options.headless = settings.BROWSER_HEADLESS
 
-        capabilities = DesiredCapabilities.FIREFOX
-        capabilities["marionette"] = True
+        binary = FirefoxBinary(settings.BROWSER_BINARY_PATH) if settings.BROWSER_BINARY_PATH else None
 
-        driver = webdriver.Firefox(profile, options=options, capabilities=capabilities)
+        driver = webdriver.Firefox(profile, options=options, firefox_binary=binary)
 
         url = "https://shazoo.ru"
         driver.get(url)

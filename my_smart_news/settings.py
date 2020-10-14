@@ -35,6 +35,9 @@ DEBUG = appConfig['app']['debug'].get()
 
 ALLOWED_HOSTS = appConfig['app']['allowed_hosts'].get()
 
+BROWSER_HEADLESS = appConfig['app']['headless_browser'].get()
+BROWSER_BINARY_PATH = appConfig['app']['browser_binary'].get()
+
 
 # Application definition
 

@@ -5,6 +5,8 @@ app:
   email: some@gmail.com
   debug: True
   allowed_hosts: []
+  headless_browser: True
+  browser_binary: '/usr/bin/firefox67/firefox'
 
 db:
   name: some

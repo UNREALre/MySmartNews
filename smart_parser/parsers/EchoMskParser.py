@@ -12,6 +12,9 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException,
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from fake_useragent import UserAgent
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from django.conf import settings
 from time import sleep
 from datetime import datetime
 import pytz
@@ -128,7 +131,12 @@ class EchoMskBuilder:
         profile = webdriver.FirefoxProfile()
         profile.set_preference('general.useragent.override', useragent.random)
 
-        driver = webdriver.Firefox(profile)
+        options = Options()
+        options.headless = settings.BROWSER_HEADLESS
+
+        binary = FirefoxBinary(settings.BROWSER_BINARY_PATH) if settings.BROWSER_BINARY_PATH else None
+
+        driver = webdriver.Firefox(profile, options=options, firefox_binary=binary)
 
         url = "https://echo.msk.ru/"
         driver.get(url)
