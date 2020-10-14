@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
 from fake_useragent import UserAgent
 from time import sleep
 from datetime import datetime
@@ -141,7 +142,10 @@ class ShazooBuilder:
         profile = webdriver.FirefoxProfile()
         profile.set_preference('general.useragent.override', useragent.random)
 
-        driver = webdriver.Firefox(profile)
+        options = Options()
+        options.headless = True
+
+        driver = webdriver.Firefox(profile, options=options)
 
         url = "https://shazoo.ru"
         driver.get(url)
