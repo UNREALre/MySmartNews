@@ -10,6 +10,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from fake_useragent import UserAgent
 from time import sleep
 from datetime import datetime
@@ -145,7 +146,10 @@ class ShazooBuilder:
         options = Options()
         options.headless = True
 
-        driver = webdriver.Firefox(profile, options=options)
+        capabilities = DesiredCapabilities.FIREFOX
+        capabilities["marionette"] = True
+
+        driver = webdriver.Firefox(profile, options=options, capabilities=capabilities)
 
         url = "https://shazoo.ru"
         driver.get(url)
