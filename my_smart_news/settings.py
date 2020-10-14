@@ -31,11 +31,9 @@ appConfig = confuse.Configuration('MY_SMART_NEWS')
 SECRET_KEY = appConfig['app']['secret'].get()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = appConfig['app']['debug'].get()
 
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-]
+ALLOWED_HOSTS = appConfig['app']['allowed_hosts'].get()
 
 
 # Application definition

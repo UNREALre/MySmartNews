@@ -3,6 +3,8 @@ appName: my_smart_news
 app:
   secret: some
   email: some@gmail.com
+  debug: True
+  allowed_hosts: []
 
 db:
   name: some
