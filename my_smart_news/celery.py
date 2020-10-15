@@ -21,7 +21,7 @@ app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 app.conf.beat_schedule = {
     'parse-new-articles-once-per-30-mins': {
         'task': 'main_parse_process_task',
-        'schedule': crontab(minute='*/15'),
+        'schedule': crontab(minute='*/30'),
     },
     'clean-old-art-once-per-day': {
         'task': 'old_cleaner_task',
