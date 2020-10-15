@@ -27,6 +27,10 @@ app.conf.beat_schedule = {
         'task': 'old_cleaner_task',
         'schedule': crontab(hour=15, minute=30),
     },
+    'celery-health-checker': {
+        'task': 'celery_health_checker',
+        'schedule': crontab(minute='*/1'),
+    },
 }
 
 
