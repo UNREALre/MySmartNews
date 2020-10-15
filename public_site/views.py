@@ -19,7 +19,7 @@ def home_page(request):
 
     user_sources = request.user.sources.all()
     articles = Article.objects.filter(source__usersources__in=user_sources).order_by(
-        'source__usersources__source_order', '-date')
+        '-date', 'source__usersources__source_order')
     paginator = Paginator(articles, 50)
 
     page_number = request.GET.get('page')
