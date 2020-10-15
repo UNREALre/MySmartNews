@@ -15,6 +15,7 @@ from article.models import Article
 from smart_parser.parser import start_parsing
 
 
+@logger.catch
 @app.task(name='old_cleaner_task')
 def old_cleaner_task():
     logger.info('Cleaning process started ... ')
@@ -25,6 +26,7 @@ def old_cleaner_task():
     return True
 
 
+@logger.catch
 @app.task(name='main_parse_process_task')
 def main_parse_process_task():
     logger.info('Starting parsing process ... ')
@@ -32,6 +34,7 @@ def main_parse_process_task():
     logger.info('Parsing completed!')
 
 
+@logger.catch
 @app.task(name='celery_health_checker')
 def celery_health_checker():
     logger.info('CLR_OK')
