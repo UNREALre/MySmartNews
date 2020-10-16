@@ -3,32 +3,20 @@
 https://echo.msk.ru/ parser.
 """
 
-import copy
 import concurrent.futures
 import requests
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException, TimeoutException, StaleElementReferenceException
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait
-from fake_useragent import UserAgent
-from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
-from django.conf import settings
+from selenium.common.exceptions import NoSuchElementException
 from time import sleep
 from datetime import datetime
 import pytz
 
 from my_smart_news.settings import logger
 from article.models import Article
-from smart_parser.helpers import clean_page
+from smart_parser.parsers.BaseParser import BaseParser, BaseBuilder
 
 
-class EchoMsk:
-    def __init__(self, driver):
-        self.driver = driver
-        self.height = self.driver.execute_script("return document.body.scrollHeight")
-
+class EchoMsk(BaseParser):
     def test_connection(self):
         """Test if Selenium successfully connected to feed."""
 
@@ -45,14 +33,9 @@ class EchoMsk:
         html_articles = self.driver.find_elements_by_class_name('newsblock')
         articles = list()
 
-        try:
-            if html_articles:
-                with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-                    articles = executor.map(self.parse_article, html_articles)
-        except Exception as ex:
-            logger.error('Error during parsing process of feed: {}. Error: {}'.format(feed_url, ex))
-        finally:
-            self.driver.close()
+        if html_articles:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+                articles = executor.map(self.parse_article, html_articles)
 
         return articles
 
@@ -118,27 +101,8 @@ class EchoMsk:
         return parsed_article
 
 
-class EchoMskBuilder:
-    def __init__(self):
-        self._instance = None
-
+class EchoMskBuilder(BaseBuilder):
     def __call__(self, **kwargs):
         driver = self.create_driver()
+        driver.get("https://echo.msk.ru/")
         return EchoMsk(driver)
-
-    def create_driver(self):
-        useragent = UserAgent()
-        profile = webdriver.FirefoxProfile()
-        profile.set_preference('general.useragent.override', useragent.random)
-
-        options = Options()
-        options.headless = settings.BROWSER_HEADLESS
-
-        binary = FirefoxBinary(settings.BROWSER_BINARY_PATH) if settings.BROWSER_BINARY_PATH else None
-
-        driver = webdriver.Firefox(profile, options=options, firefox_binary=binary)
-
-        url = "https://echo.msk.ru/"
-        driver.get(url)
-
-        return driver

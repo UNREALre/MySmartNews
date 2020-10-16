@@ -6,25 +6,17 @@ https://shazoo.ru/ parser.
 import concurrent.futures
 import requests
 from bs4 import BeautifulSoup
-from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
-from django.conf import settings
-from fake_useragent import UserAgent
 from time import sleep
 from datetime import datetime
 
 from my_smart_news.settings import logger
 from smart_parser.helpers import extend_articles
 from article.models import Article
+from smart_parser.parsers.BaseParser import BaseParser, BaseBuilder
 
 
-class Shazoo:
-    def __init__(self, driver):
-        self.driver = driver
-
+class Shazoo(BaseParser):
     def test_connection(self):
         """Test if Selenium successfully connected to feed."""
 
@@ -44,17 +36,13 @@ class Shazoo:
         """Start parsing process. Get pages to parse. Return generator with parsed articles"""
 
         articles = list()
-        try:
-            articles_added = extend_articles(articles, self.parse_page(feed_url))
-            page = 1
-            while articles_added:
-                sleep(0.5)  # simulation user behavior
-                page += 1
-                articles_added = extend_articles(articles, self.parse_page('{}?page={}'.format(feed_url, page)))
-        except Exception as ex:
-            logger.error('Error during parsing process of feed: {}. Error: {}'.format(feed_url, ex))
-        finally:
-            self.driver.close()
+
+        articles_added = extend_articles(articles, self.parse_page(feed_url))
+        page = 1
+        while articles_added:
+            sleep(0.5)  # simulation user behavior
+            page += 1
+            articles_added = extend_articles(articles, self.parse_page('{}?page={}'.format(feed_url, page)))
 
         return articles
 
@@ -131,27 +119,8 @@ class Shazoo:
         return parsed_article
 
 
-class ShazooBuilder:
-    def __init__(self):
-        self._instance = None
-
+class ShazooBuilder(BaseBuilder):
     def __call__(self, **kwargs):
         driver = self.create_driver()
+        driver.get("https://shazoo.ru")
         return Shazoo(driver)
-
-    def create_driver(self):
-        useragent = UserAgent()
-        profile = webdriver.FirefoxProfile()
-        profile.set_preference('general.useragent.override', useragent.random)
-
-        options = Options()
-        options.headless = settings.BROWSER_HEADLESS
-
-        binary = FirefoxBinary(settings.BROWSER_BINARY_PATH) if settings.BROWSER_BINARY_PATH else None
-
-        driver = webdriver.Firefox(profile, options=options, firefox_binary=binary)
-
-        url = "https://shazoo.ru"
-        driver.get(url)
-
-        return driver

@@ -19,14 +19,14 @@ def start_parsing(source=None):
         sources = Source.objects.filter(label=source)
 
     for source in sources:
-        parser = factory.create(source.label)
-        if parser and parser.test_connection():
-            logger.info('Successfully connected to source {}'.format(source.name))
+        with factory.create(source.label) as parser:
+            if parser and parser.test_connection():
+                logger.info('Successfully connected to source {}'.format(source.name))
 
-            articles = parser.do_parse(source.url)
-            save_to_db(articles, source)
-        else:
-            logger.error('Can\'t connect to source {}!'.format(source.name))
+                articles = parser.do_parse(source.url)
+                save_to_db(articles, source)
+            else:
+                logger.error('Can\'t connect to source {}!'.format(source.name))
 
 
 @logger.catch
