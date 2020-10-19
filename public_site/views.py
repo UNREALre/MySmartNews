@@ -62,8 +62,10 @@ def manage_resources(request):
 
         return JsonResponse({'ok': ok})
     else:
-        user_sources = request.user.sources.all()
-        all_sources = Source.objects.order_by('usersources__source_order')
+        user_sources = Source.objects.filter(usersources__user=request.user).order_by('usersources__source_order')
+        all_sources = Source.objects.order_by('name')
+
+        print(all_sources)
 
         context = {
             'user_sources': user_sources,

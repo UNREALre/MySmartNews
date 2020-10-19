@@ -17,12 +17,12 @@
             </div>
 
             <div class="card-deck mt-5" id="sortable">
-                {% for source in all_sources %}
-                    <div class="card text-white mb-3 source-card {% if source.id in user.sources.all|get_value_in_qs:'source__id' %}bg-success{% else %}bg-info{% endif %}"
+                {% for source in user_sources %}
+                    <div class="card text-white mb-3 source-card bg-success"
                          style="max-width: 18rem;"
                          data-id="{{ source.id }}"
-                         data-status_action="{% if source.id in user.sources.all|get_value_in_qs:'source__id' %}disable{% else %}enable{% endif %}"
-                         data-sort="{% for user_source in user_sources %}{% if user_source.source.id == source.id %}{{ user_source.source_order }}{% endif %}{% endfor %}"
+                         data-status_action="disable"
+                         data-sort="{{ source.source_order }}"
                     >
                       <div class="card-header">
                           {% for category in source.categories.all %}
@@ -34,6 +34,27 @@
                         <p class="card-text">{{ source.description }}</p>
                       </div>
                     </div>
+                {% endfor %}
+
+                {% for source in all_sources %}
+                    {% if source.id not in user.sources.all|get_value_in_qs:'source__id' %}
+                        <div class="card text-white mb-3 source-card bg-info"
+                             style="max-width: 18rem;"
+                             data-id="{{ source.id }}"
+                             data-status_action="enable"
+                             data-sort=""
+                        >
+                          <div class="card-header">
+                              {% for category in source.categories.all %}
+                                  {{ category.name }}{% if not forloop.last %}, {% endif %}
+                              {% endfor %}
+                          </div>
+                          <div class="card-body">
+                            <h5 class="card-title">{{ source.name }}</h5>
+                            <p class="card-text">{{ source.description }}</p>
+                          </div>
+                        </div>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>
