@@ -24,3 +24,35 @@ Command to run parser:
 
 Command to run parser only for specific source:
 >>python manage.py run -s SHAZ
+
+# ENV files
+Project require env files in the route folder: .evn.dev, .env.prod, .env.prod.db.
+Example of .env.dev file:
+
+>DEBUG=1
+SECRET_KEY=my_secret
+DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+SQL_DATABASE=my_db
+SQL_USER=my_user
+SQL_PASSWORD=my_pass
+SQL_HOST=db
+SQL_PORT=5432
+DATABASE=postgres
+
+Example of .env.prod:
+
+>DEBUG=0
+SECRET_KEY=my_secret
+DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+SQL_DATABASE=my_db
+SQL_USER=my_user
+SQL_PASSWORD=my_pass
+SQL_HOST=db
+SQL_PORT=5432
+DATABASE=postgres
+
+Example of .env.prod.db:
+
+>POSTGRES_USER=my_user
+POSTGRES_PASSWORD=my_pass
+POSTGRES_DB=my_db

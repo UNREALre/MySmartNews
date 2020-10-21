@@ -3,6 +3,10 @@ config.yaml
 *.sqlite3
 *.rdb
 /my_smart_news/staticfiles/
+*.env.*
+*.env
+*.bak
+
 
 # exclude everything
 logs/*

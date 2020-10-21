@@ -28,12 +28,12 @@ appConfig = confuse.Configuration('MY_SMART_NEWS')
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = appConfig['app']['secret'].get()
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = appConfig['app']['debug'].get()
+DEBUG = int(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = appConfig['app']['allowed_hosts'].get()
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 BROWSER_HEADLESS = appConfig['app']['headless_browser'].get()
 BROWSER_BINARY_PATH = appConfig['app']['browser_binary'].get()
@@ -108,11 +108,11 @@ WSGI_APPLICATION = 'my_smart_news.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': appConfig['db']['name'].get(),
-        'USER': appConfig['db']['user'].get(),
-        'PASSWORD': appConfig['db']['pass'].get(),
-        'HOST': appConfig['db']['host'].get(),
-        'PORT': appConfig['db']['port'].get(),
+        "NAME": os.environ.get("SQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
+        "USER": os.environ.get("SQL_USER", "user"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+        "HOST": os.environ.get("SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }
 
